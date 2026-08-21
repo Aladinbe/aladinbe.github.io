@@ -1,0 +1,357 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon espace numérique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F7F5; --surface:#FFFFFF; --surface-alt:#EEF0EC;
+    --ink:#1B1D1F; --ink-soft:#5B5F63; --ink-faint:#9A9E98; --line:#E1E3DF;
+    --ecole:#3457D5; --ecole-bg:#EDF0FC; --asbl:#2F8F6E; --asbl-bg:#E9F5EF;
+    --perso:#B24B72; --perso-bg:#FBEBF1; --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--paper); color:var(--ink); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased; transition:background .3s ease; }
+  #env-sticky-wrap{ position:sticky; top:65px; z-index:15; background:var(--paper); padding:14px 0 10px; margin-bottom:6px; transition:background .3s ease; }
+  .eyebrow{ font-family:'IBM Plex Mono', monospace; font-size:11px; font-weight:600; letter-spacing:0.11em; text-transform:uppercase; color:var(--ink-faint); }
+  h1,h2,h3{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.01em; }
+  header{ position:sticky; top:0; z-index:20; background:rgba(246,247,245,0.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+  .header-inner{ max-width:1120px; margin:0 auto; display:flex; align-items:center; gap:20px; padding:16px 24px; }
+  .logo{ display:flex; align-items:center; gap:10px; font-family:'Space Grotesk'; font-weight:700; font-size:18px; white-space:nowrap; }
+  .logo-mark{ width:30px; height:30px; border-radius:9px; background:linear-gradient(135deg, var(--ecole), var(--asbl) 50%, var(--perso)); flex-shrink:0; }
+  .search-wrap{ flex:1; position:relative; max-width:480px; }
+  .search-wrap input{ width:100%; font-family:'Inter'; font-size:14px; padding:10px 14px 10px 36px; border:1px solid var(--line); border-radius:10px; background:var(--surface); outline:none; color:var(--ink); }
+  .search-wrap input:focus{ border-color:var(--ink-faint); }
+  .search-wrap svg{ position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:0.4; }
+  .profile-dot{ width:34px; height:34px; border-radius:50%; background:var(--surface-alt); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk'; font-weight:600; font-size:13px; flex-shrink:0; }
+  main{ max-width:1120px; margin:0 auto; padding:40px 24px 100px; }
+  section{ margin-bottom:56px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:18px; }
+  .section-head h2{ font-size:20px; }
+  .env-row{ display:flex; flex-wrap:wrap; gap:10px; }
+  .env-btn{ display:flex; align-items:center; gap:10px; background:var(--surface); border:1.5px solid var(--line); border-radius:999px; padding:10px 18px 10px 14px; cursor:pointer; transition:transform .12s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease; }
+  .env-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 18px -12px rgba(0,0,0,0.3); }
+  .env-btn.active{ border-color:var(--c); background:var(--bg); }
+  .env-btn .icon{ font-size:17px; }
+  .env-btn .label-wrap{ display:flex; flex-direction:column; line-height:1.25; }
+  .env-btn h3{ font-family:'Space Grotesk'; font-size:14.5px; font-weight:600; }
+  .env-btn .count{ font-family:'IBM Plex Mono'; font-size:10.5px; color:var(--ink-soft); }
+  .env-btn.active .count{ color:var(--c); }
+  .env-btn .dot{ width:7px; height:7px; border-radius:50%; background:var(--c); }
+  .add-btn{ display:flex; align-items:center; gap:8px; border:1.5px dashed var(--line); border-radius:999px; padding:10px 18px 10px 14px; color:var(--ink-faint); font-family:'Space Grotesk'; font-size:14px; font-weight:500; background:none; cursor:pointer; transition:border-color .15s ease, color .15s ease; }
+  .add-btn:hover{ border-color:var(--ink-soft); color:var(--ink-soft); }
+  .add-btn .plus{ font-size:16px; line-height:1; }
+  .add-quick{ border-radius:999px; padding:9px 16px 9px 12px; font-size:13.5px; }
+  .add-tool-card{ border:1.5px dashed var(--line); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px; min-height:96px; color:var(--ink-faint); background:none; cursor:pointer; font-family:'Inter'; font-size:12.5px; font-weight:500; transition:border-color .15s ease, color .15s ease; }
+  .add-tool-card:hover{ border-color:var(--ink-soft); color:var(--ink-soft); }
+  .add-tool-card .plus{ font-size:20px; font-family:'Space Grotesk'; }
+  .quick-row{ display:flex; flex-wrap:wrap; gap:10px; }
+  .quick-pill{ display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:9px 16px 9px 12px; font-size:13.5px; font-weight:500; cursor:pointer; text-decoration:none; color:var(--ink); transition:border-color .15s ease, background .15s ease; }
+  .quick-pill:hover{ border-color:var(--ink-faint); background:var(--surface-alt); }
+  .cat-block{ margin-bottom:8px; border-top:1px solid var(--line); }
+  .cat-header{ display:flex; align-items:center; justify-content:space-between; padding:16px 4px; cursor:pointer; user-select:none; }
+  .cat-header .left{ display:flex; align-items:center; gap:10px; }
+  .cat-header h3{ font-size:15px; font-weight:600; }
+  .cat-header .chev{ transition:transform .2s ease; color:var(--ink-faint); }
+  .cat-block.collapsed .chev{ transform:rotate(-90deg); }
+  .cat-block.collapsed .tool-grid{ display:none; }
+  .tool-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding-bottom:20px; }
+  .tool-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px; cursor:pointer; position:relative; transition:transform .15s ease, box-shadow .15s ease; }
+  .tool-card:hover{ transform:translateY(-3px); box-shadow:0 10px 24px -16px rgba(0,0,0,0.3); }
+  .tool-logo{ width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; overflow:hidden; font-family:'Space Grotesk'; font-weight:700; font-size:13px; background:var(--surface-alt); color:var(--ink); margin-bottom:12px; }
+  .tool-logo svg{ width:100%; height:100%; }
+  .tool-card h4{ font-size:14.5px; font-weight:600; margin-bottom:2px; }
+  .tool-card p{ font-size:12px; color:var(--ink-soft); }
+  .env-tags{ position:absolute; top:14px; right:14px; display:flex; gap:4px; }
+  .env-dot{ width:8px; height:8px; border-radius:50%; }
+  .test-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .test-card{ background:var(--surface); border:1.5px dashed var(--line); border-radius:var(--radius); padding:16px; cursor:pointer; }
+  .test-card:hover{ border-color:var(--ink-faint); }
+  .test-card .row1{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  .status-badge{ font-family:'IBM Plex Mono'; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; padding:3px 8px; border-radius:999px; }
+  .status-atester{ background:#FDF3DC; color:#8A6A0E; }
+  .status-teste{ background:var(--asbl-bg); color:var(--asbl); }
+  .status-garder{ background:var(--ecole-bg); color:var(--ecole); }
+  .status-abandonne{ background:var(--surface-alt); color:var(--ink-faint); }
+  .test-card h4{ font-size:14px; margin-bottom:2px; }
+  .test-card p{ font-size:12px; color:var(--ink-soft); }
+  .overlay{ position:fixed; inset:0; background:rgba(20,20,20,0.4); display:none; align-items:center; justify-content:center; z-index:50; padding:24px; }
+  .overlay.open{ display:flex; }
+  .modal{ background:var(--surface); border-radius:20px; max-width:420px; width:100%; padding:28px; position:relative; }
+  .modal-close{ position:absolute; top:18px; right:18px; cursor:pointer; width:28px; height:28px; border-radius:50%; background:var(--surface-alt); display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--ink-soft); }
+  .modal .tool-logo{ width:48px; height:48px; font-size:16px; }
+  .modal h3{ font-size:19px; margin-bottom:2px; }
+  .modal .fn{ font-size:13px; color:var(--ink-soft); margin-bottom:18px; }
+  .modal-row{ padding:10px 0; border-top:1px solid var(--line); }
+  .modal-row:first-of-type{ border-top:none; }
+  .modal-row .eyebrow{ margin-bottom:4px; }
+  .modal-row .val{ font-size:13.5px; }
+  .modal-envs{ display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+  .env-chip{ font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; }
+  .open-btn{ display:block; text-align:center; margin-top:18px; background:var(--ink); color:var(--paper); text-decoration:none; padding:11px; border-radius:10px; font-weight:600; font-size:13.5px; }
+  @media(max-width:800px){ .env-btn{ flex:1 1 auto; } .tool-grid{ grid-template-columns:repeat(2,1fr); } .test-grid{ grid-template-columns:1fr; } .search-wrap{ display:none; } }
+  .breadcrumb{ max-width:1120px; margin:0 auto; padding:14px 24px 0; font-family:'IBM Plex Mono'; font-size:12px; color:var(--ink-soft); }
+  .breadcrumb a{ color:var(--ink-soft); text-decoration:none; cursor:pointer; }
+  .breadcrumb a:hover{ color:var(--ink); text-decoration:underline; }
+  .breadcrumb .sep{ margin:0 6px; opacity:.5; }
+  .breadcrumb .current{ color:var(--ink); font-weight:600; }
+  .icon-btn{ width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:var(--surface); cursor:pointer; font-size:14px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .icon-btn:hover{ background:var(--surface-alt); }
+  .fav-star{ position:absolute; top:14px; left:14px; font-size:14px; opacity:0.25; cursor:pointer; z-index:2; transition:opacity .15s ease, transform .15s ease; }
+  .fav-star:hover{ opacity:0.6; transform:scale(1.15); }
+  .fav-star.active{ opacity:1; }
+  body.dark{ --paper:#17181A; --surface:#1F2123; --surface-alt:#26282B; --ink:#F0F1EE; --ink-soft:#A8ACA6; --ink-faint:#6E726C; --line:#2E3033; }
+  body.dark .open-btn{ background:var(--ink); color:var(--paper); }
+  #lock-screen{ position:fixed; inset:0; z-index:100; background:rgba(20,20,20,0.55); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; }
+  #lock-screen.open{ display:flex; }
+  .lock-card{ background:var(--surface); border-radius:20px; padding:36px 32px; text-align:center; max-width:300px; width:100%; }
+  .lock-card .lock-icon{ font-size:30px; margin-bottom:12px; }
+  .lock-card h3{ font-size:17px; margin-bottom:6px; }
+  .lock-card p{ font-size:13px; color:var(--ink-soft); margin-bottom:20px; }
+  .lock-card button{ background:var(--ink); color:var(--paper); border:none; padding:11px 20px; border-radius:10px; font-weight:600; font-size:13.5px; cursor:pointer; font-family:'Inter'; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo"><div class="logo-mark"></div>Mon espace numérique</div>
+    <div class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search" type="text" placeholder="Rechercher un outil, une fonction…">
+    </div>
+    <div class="profile-dot">FR</div>
+    <button class="icon-btn" id="dark-toggle" onclick="toggleDark()" title="Mode sombre">🌙</button>
+    <button class="icon-btn" onclick="lockNow()" title="Verrouiller">🔒</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="breadcrumb" id="breadcrumb"></div>
+
+  <section id="env-sticky-wrap">
+    <div class="section-head"><h2>Mes environnements</h2><span class="eyebrow" id="env-status">Tous affichés</span></div>
+    <div class="env-row" id="env-grid"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Accès rapides</h2></div>
+    <div class="quick-row" id="quick-row"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Mes outils</h2></div>
+    <div id="cat-container"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>À tester</h2><span class="eyebrow" id="test-count"></span></div>
+    <div class="test-grid" id="test-grid"></div>
+  </section>
+
+</main>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon">🔒</div>
+    <h3>Page verrouillée</h3>
+    <p>Verrouillée après 5 minutes d'inactivité. Ton environnement et ta position sont conservés.</p>
+    <button onclick="unlock()">Déverrouiller</button>
+  </div>
+</div>
+
+<script>
+const ICONES = {
+  claude:   `<svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="16" fill="#D97757"/><g fill="#fff"><path d="M16 7l1.8 6.2H24l-5 3.8 1.9 6.2L16 19.4l-4.9 3.8 1.9-6.2-5-3.8h6.2z"/></g></svg>`,
+  chatgpt:  `<svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="16" fill="#fff" stroke="#E1E3DF" stroke-width="1"/><path d="M20.8 14.2a4 4 0 00-.3-3.3 4.3 4.3 0 00-4.6-2 4.3 4.3 0 00-7.2 1.6 4 4 0 00-2.6 1.9 4.3 4.3 0 00.5 4.9 4 4 0 00.3 3.3 4.3 4.3 0 004.6 2 4.3 4.3 0 007.2-1.6 4 4 0 002.6-1.9 4.3 4.3 0 00-.5-4.9z" fill="#1B1B1F"/></svg>`,
+  gemini:   `<svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="16" fill="#1A1A2E"/><path d="M16 6c0 6-4 10-10 10 6 0 10 4 10 10 0-6 4-10 10-10-6 0-10-4-10-10z" fill="url(#g)"/><defs><linearGradient id="g" x1="6" y1="6" x2="26" y2="26"><stop stop-color="#4285F4"/><stop offset=".5" stop-color="#9B72CB"/><stop offset="1" stop-color="#D96570"/></linearGradient></defs></svg>`,
+  gamma:    `<svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="16" fill="#1B1B1F"/><path d="M11 21V11l10 10V11" stroke="url(#gg)" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="gg" x1="11" y1="11" x2="21" y2="21"><stop stop-color="#F5B942"/><stop offset="1" stop-color="#EE4C7C"/></linearGradient></defs></svg>`,
+  canva:    `<svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="16" fill="#00C4CC"/><path d="M16 9a7 7 0 100 14 7 7 0 003.3-.8.7.7 0 00-.6-1.2 5.6 5.6 0 11.6-9.4.7.7 0 10.8-1.1A6.9 6.9 0 0016 9z" fill="#fff"/></svg>`,
+  ilovepdf: `<svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="16" fill="#E5322D"/><path d="M16 22s-6-3.7-6-8a3.6 3.6 0 016-2.6A3.6 3.6 0 0122 14c0 4.3-6 8-6 8z" fill="#fff"/></svg>`,
+  brainy:   `<svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="16" fill="#3457D5"/><path d="M13 9a3 3 0 00-3 3 3 3 0 00-1 5.8A3 3 0 0012 22a3 3 0 005-2v-9a3 3 0 00-4-2z" fill="#fff" opacity=".95"/><path d="M19 9a3 3 0 013 3 3 3 0 011 5.8A3 3 0 0120 22a3 3 0 01-5-2v-9a3 3 0 014-2z" fill="#fff" opacity=".7"/></svg>`,
+  notegpt:  `<svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="16" fill="#7C5CFC"/><path d="M10 10h9l3 3v9H10z" fill="#fff"/><path d="M19 10v3h3z" fill="#D9CFFF"/><path d="M12.5 16h5M12.5 18.5h5" stroke="#7C5CFC" stroke-width="1.2"/></svg>`,
+  metaai:   `<svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="16" fill="#0866FF"/><path d="M9 20c1.5-6 3.7-9 6-9s2.6 3 4 6c1 2.3 2 3.5 3 3.5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+  mail:     `<svg viewBox="0 0 32 32" width="18" height="18"><rect x="5" y="8" width="22" height="16" rx="3" fill="#2E7CF6"/><path d="M6 10l10 8 10-8" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  drive:    `<svg viewBox="0 0 32 32" width="18" height="18"><polygon points="11,6 21,6 27,17 17,17" fill="#FFC107"/><polygon points="5,17 11,6 17,17 11,28" fill="#2196F3"/><polygon points="27,17 21,28 11,28 17,17" fill="#4CAF50"/></svg>`,
+  whatsapp: `<svg viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M16 8a8 8 0 00-6.9 12L8 24l4.2-1.1A8 8 0 1016 8z" fill="#fff"/><path d="M13 12.5c.3-.6 1-.5 1.4 0 .3.4.9 1.6.6 2.1s-.9.8-.6 1.3 1.6 2 2.7 2.4c.5.2.8-.2 1.2-.6.4-.4 1-.1 1.4.1.4.2 1.6.8 1.6 1.2s-.2 1.1-1 1.5c-.8.4-1.8.4-3-.1-1.6-.6-3.4-2.2-4.4-3.7-.7-1-1.1-2.1-.9-2.9.1-.5.3-.9.5-1.3z" fill="#25D366"/></svg>`,
+  stockage: `<svg viewBox="0 0 32 32" width="18" height="18"><rect x="5" y="6" width="22" height="8" rx="2" fill="#8E9297"/><rect x="5" y="18" width="22" height="8" rx="2" fill="#B0B4B9"/><circle cx="10" cy="10" r="1.3" fill="#fff"/><circle cx="10" cy="22" r="1.3" fill="#fff"/></svg>`,
+  agenda:   `<svg viewBox="0 0 32 32" width="18" height="18"><rect x="5" y="7" width="22" height="19" rx="3" fill="#EA4335"/><rect x="5" y="7" width="22" height="6" rx="3" fill="#B0281E"/><rect x="9" y="16" width="4" height="4" fill="#fff"/><rect x="19" y="16" width="4" height="4" fill="#fff"/></svg>`,
+  documents:`<svg viewBox="0 0 32 32" width="18" height="18"><path d="M5 9a2 2 0 012-2h6l2 2h10a2 2 0 012 2v11a2 2 0 01-2 2H7a2 2 0 01-2-2z" fill="#F5B942"/></svg>`,
+  sites:    `<svg viewBox="0 0 32 32" width="18" height="18"><circle cx="16" cy="16" r="11" fill="none" stroke="#5B8DEF" stroke-width="2.2"/><path d="M5 16h22M16 5c3 3 4.5 7 4.5 11s-1.5 8-4.5 11c-3-3-4.5-7-4.5-11S13 8 16 5z" stroke="#5B8DEF" stroke-width="1.6" fill="none"/></svg>`,
+};
+function renderLogo(id, fallbackInitials){ return ICONES[id] || `<span>${fallbackInitials}</span>`; }
+
+const ENVIRONNEMENTS = [
+  { id:'ecole', nom:'École', icon:'🏫', color:'var(--ecole)', bg:'var(--ecole-bg)' },
+  { id:'asbl', nom:'ASBL', icon:'🏢', color:'var(--asbl)', bg:'var(--asbl-bg)' },
+  { id:'perso', nom:'Personnel', icon:'👤', color:'var(--perso)', bg:'var(--perso-bg)' },
+];
+
+const ACCES_RAPIDES = [
+  { id:'mail', iconId:'mail', label:'Mails', liens:{ accueil:'#', ecole:'#mail-ecole', asbl:'#mail-asbl', perso:'#mail-perso' } },
+  { id:'drive', iconId:'drive', label:'Drive', liens:{ accueil:'#', ecole:'#drive-ecole', asbl:'#drive-asbl', perso:'#drive-perso' } },
+  { id:'whatsapp', iconId:'whatsapp', label:'WhatsApp', liens:{ accueil:'#', ecole:'#wa-ecole', asbl:'#wa-asbl', perso:'#wa-perso' } },
+  { id:'stockage', iconId:'stockage', label:'Stockage', liens:{ accueil:'#', ecole:'#stock-ecole', asbl:'#stock-asbl', perso:'#stock-perso' } },
+  { id:'agenda', iconId:'agenda', label:'Agenda', liens:{ accueil:'#', ecole:'#agenda-ecole', asbl:'#agenda-asbl', perso:'#agenda-perso' } },
+  { id:'documents', iconId:'documents', label:'Documents', liens:{ accueil:'#', ecole:'#docs-ecole', asbl:'#docs-asbl', perso:'#docs-perso' } },
+  { id:'sites', iconId:'sites', label:'Sites / plateformes', liens:{ accueil:'#', ecole:'#sites-ecole', asbl:'#sites-asbl', perso:'#sites-perso' } },
+];
+
+const CATEGORIES = ['IA','Création graphique','Présentations','PDF / Documents','Quiz / pédagogie'];
+
+const OUTILS = [
+  { id:1, nom:'Claude', iconId:'claude', logo:'CL', fonction:'IA', cat:'IA', envs:['ecole','asbl','perso'], compte:'à compléter', notes:'', statut:'À garder', date:'21 août 2026' },
+  { id:2, nom:'ChatGPT', iconId:'chatgpt', logo:'GPT', fonction:'IA', cat:'IA', envs:['ecole','asbl','perso'], compte:'à compléter', notes:'', statut:'À garder', date:'21 août 2026' },
+  { id:3, nom:'Gemini', iconId:'gemini', logo:'GM', fonction:'IA', cat:'IA', envs:['ecole','asbl','perso'], compte:'à compléter', notes:'', statut:'À garder', date:'21 août 2026' },
+  { id:4, nom:'Gamma', iconId:'gamma', logo:'GA', fonction:'Présentations', cat:'Présentations', envs:['ecole','asbl','perso'], compte:'à compléter', notes:'', statut:'À garder', date:'21 août 2026' },
+  { id:5, nom:'Canva', iconId:'canva', logo:'CV', fonction:'Création graphique', cat:'Création graphique', envs:['ecole','asbl','perso'], compte:'à compléter', notes:'', statut:'À garder', date:'21 août 2026' },
+  { id:6, nom:'iLovePDF', iconId:'ilovepdf', logo:'iL', fonction:'PDF / Documents', cat:'PDF / Documents', envs:['ecole','asbl','perso'], compte:'à compléter', notes:'', statut:'À garder', date:'21 août 2026' },
+  { id:7, nom:'Brainy', iconId:'brainy', logo:'BR', fonction:'Quiz / pédagogie', cat:'Quiz / pédagogie', envs:['ecole','asbl','perso'], compte:'à compléter', notes:'', statut:'À garder', date:'21 août 2026' },
+  { id:8, nom:'NoteGPT', iconId:'notegpt', logo:'NG', fonction:'IA', cat:'IA', envs:['ecole','asbl','perso'], compte:'à compléter', notes:'', statut:'À garder', date:'21 août 2026' },
+  { id:9, nom:'Meta AI', iconId:'metaai', logo:'M', fonction:'IA', cat:'IA', envs:['ecole','asbl','perso'], compte:'à compléter', notes:'', statut:'À garder', date:'21 août 2026' },
+];
+
+let activeEnv = null;
+let favoris = JSON.parse(localStorage.getItem('portail-favoris') || '[]');
+const envMap = Object.fromEntries(ENVIRONNEMENTS.map(e=>[e.id,e]));
+
+function envDotsHTML(envs){ return envs.map(id=>`<span class="env-dot" style="background:${envMap[id].color}" title="${envMap[id].nom}"></span>`).join(''); }
+
+function renderEnvGrid(){
+  const grid = document.getElementById('env-grid');
+  grid.innerHTML = ENVIRONNEMENTS.map(e=>{
+    const count = OUTILS.filter(o=>o.envs.includes(e.id)).length;
+    return `<div class="env-btn ${activeEnv===e.id?'active':''}" style="--c:${e.color}; --bg:${e.bg}" onclick="toggleEnv('${e.id}')">
+      <span class="icon">${e.icon}</span>
+      <div class="label-wrap"><h3>${e.nom}</h3><span class="count">${count} outil${count>1?'s':''}</span></div>
+    </div>`;
+  }).join('') + `<button class="add-btn" onclick="placeholderAdd('environnement')"><span class="plus">+</span> Ajouter un environnement</button>`;
+  document.getElementById('env-status').textContent = activeEnv ? `Filtré : ${envMap[activeEnv].nom}` : 'Tous affichés';
+  renderBreadcrumb();
+}
+
+function renderBreadcrumb(){
+  const bc = document.getElementById('breadcrumb');
+  if(!activeEnv){ bc.innerHTML = `<span class="current">Accueil</span>`; return; }
+  bc.innerHTML = `<a onclick="toggleEnv('${activeEnv}')">Accueil</a><span class="sep">›</span><span class="current">${envMap[activeEnv].nom}</span>`;
+}
+
+function applyTint(){
+  const bg = activeEnv ? envMap[activeEnv].bg : 'var(--paper)';
+  document.body.style.background = bg;
+  document.getElementById('env-sticky-wrap').style.background = bg;
+}
+
+function toggleEnv(id){
+  activeEnv = activeEnv===id ? null : id;
+  renderEnvGrid(); renderQuick(); renderTools(); applyTint();
+}
+
+function renderQuick(){
+  const cle = activeEnv || 'accueil';
+  document.getElementById('quick-row').innerHTML = ACCES_RAPIDES.map(q=>
+    `<a class="quick-pill" href="${q.liens[cle]}" onclick="return false;">${renderLogo(q.iconId)} ${q.label}</a>`
+  ).join('') + `<button class="add-btn add-quick" onclick="placeholderAdd('accès rapide')"><span class="plus">+</span> Ajouter</button>`;
+}
+
+function renderTools(){
+  const search = document.getElementById('search').value.trim().toLowerCase();
+  const container = document.getElementById('cat-container');
+  container.innerHTML = '';
+  CATEGORIES.forEach(cat=>{
+    let items = OUTILS.filter(o=>o.cat===cat);
+    if(activeEnv) items = items.filter(o=>o.envs.includes(activeEnv));
+    if(search) items = items.filter(o=>o.nom.toLowerCase().includes(search) || o.cat.toLowerCase().includes(search));
+    if(items.length===0 && search) return;
+    const block = document.createElement('div');
+    block.className = 'cat-block';
+    block.innerHTML = `
+      <div class="cat-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <div class="left"><span class="eyebrow">${cat} · ${items.length}</span></div>
+        <span class="chev">▾</span>
+      </div>
+      <div class="tool-grid">
+        ${items.map(o=>`
+          <div class="tool-card" onclick="openModal(${o.id})">
+            <span class="fav-star ${favoris.includes(o.id)?'active':''}" onclick="event.stopPropagation(); toggleFav(${o.id})">★</span>
+            <div class="env-tags">${envDotsHTML(o.envs)}</div>
+            <div class="tool-logo">${renderLogo(o.iconId, o.logo)}</div>
+            <h4>${o.nom}</h4>
+            <p>${o.fonction}</p>
+          </div>`).join('')}
+        <button class="add-tool-card" onclick="placeholderAdd('outil (${cat})')"><span class="plus">+</span> Ajouter un outil</button>
+      </div>`;
+    container.appendChild(block);
+  });
+  if(container.innerHTML==='') container.innerHTML = '<p style="color:var(--ink-soft); font-size:13.5px;">Aucun outil ne correspond à ce filtre.</p>';
+}
+
+function placeholderAdd(type){ alert(`Emplacement réservé pour ajouter un(e) ${type}.\n(La sauvegarde réelle sera branchée dans une prochaine étape.)`); }
+
+function renderTestZone(){
+  const items = OUTILS.filter(o=>o.statut==='À tester');
+  document.getElementById('test-count').textContent = items.length ? `${items.length} en évaluation` : '';
+  const grid = document.getElementById('test-grid');
+  if(items.length===0){ grid.innerHTML = '<p style="color:var(--ink-soft); font-size:13.5px;">Aucun outil en cours de test pour l’instant.</p>'; return; }
+  grid.innerHTML = items.map(o=>`
+    <div class="test-card" onclick="openModal(${o.id})">
+      <div class="row1"><div class="tool-logo" style="margin-bottom:0;">${o.logo}</div><span class="status-badge status-atester">À tester</span></div>
+      <h4>${o.nom}</h4><p>${o.notes || o.fonction}</p>
+    </div>`).join('');
+}
+
+const statusClass = { 'À tester':'status-atester', 'Testé':'status-teste', 'À garder':'status-garder', 'Abandonné':'status-abandonne' };
+
+function openModal(id){
+  const o = OUTILS.find(t=>t.id===id);
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-close" onclick="closeModal()">✕</div>
+    <div class="tool-logo">${renderLogo(o.iconId, o.logo)}</div>
+    <h3>${o.nom}</h3><div class="fn">${o.fonction}</div>
+    <div class="modal-row"><div class="eyebrow">Environnements</div><div class="modal-envs">${o.envs.map(id=>`<span class="env-chip" style="background:${envMap[id].bg}; color:${envMap[id].color}">${envMap[id].nom}</span>`).join('')}</div></div>
+    <div class="modal-row"><div class="eyebrow">Compte utilisé</div><div class="val">${o.compte}</div></div>
+    <div class="modal-row"><div class="eyebrow">Statut</div><div class="val"><span class="status-badge ${statusClass[o.statut]}">${o.statut}</span></div></div>
+    <div class="modal-row"><div class="eyebrow">Dernier test</div><div class="val">${o.date}</div></div>
+    ${o.notes ? `<div class="modal-row"><div class="eyebrow">Notes</div><div class="val">${o.notes}</div></div>` : ''}
+    <a href="#" class="open-btn" onclick="return false;">Ouvrir ${o.nom} →</a>
+  `;
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
+document.getElementById('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+document.getElementById('search').addEventListener('input', renderTools);
+
+renderEnvGrid(); renderQuick(); renderTools(); renderTestZone(); applyTint();
+
+function toggleFav(id){
+  favoris = favoris.includes(id) ? favoris.filter(f=>f!==id) : [...favoris, id];
+  localStorage.setItem('portail-favoris', JSON.stringify(favoris));
+  renderTools();
+}
+
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  document.getElementById('dark-toggle').textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+  localStorage.setItem('portail-dark', document.body.classList.contains('dark') ? '1' : '0');
+}
+if(localStorage.getItem('portail-dark') === '1'){ toggleDark(); }
+
+let inactivityTimer; let savedScroll = 0;
+function scheduleLock(){ clearTimeout(inactivityTimer); inactivityTimer = setTimeout(lockNow, 5 * 60 * 1000); }
+function lockNow(){ savedScroll = window.scrollY; document.getElementById('lock-screen').classList.add('open'); }
+function unlock(){ document.getElementById('lock-screen').classList.remove('open'); window.scrollTo(0, savedScroll); scheduleLock(); }
+['mousemove','keydown','click','scroll','touchstart'].forEach(evt=> document.addEventListener(evt, () => { if(!document.getElementById('lock-screen').classList.contains('open')) scheduleLock(); }));
+scheduleLock();
+</script>
+
+</body>
+</html>
